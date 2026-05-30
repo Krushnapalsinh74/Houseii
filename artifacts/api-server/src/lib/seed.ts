@@ -4,16 +4,29 @@ import { sql } from "drizzle-orm";
 import { logger } from "./logger";
 
 export async function seedIfEmpty() {
-  const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(usersTable);
+  const adminHash = await bcrypt.hash("admin123", 10);
+
+  // Always ensure the admin user exists
+  const existing = await db.select({ id: usersTable.id }).from(usersTable)
+    .where(sql`email = 'admin@housiee.in'`).limit(1);
+
+  if (existing.length === 0) {
+    await db.insert(usersTable).values({
+      name: "Admin User", email: "admin@housiee.in", phone: "9999999999",
+      passwordHash: adminHash, role: "admin", isVerified: true,
+    });
+    logger.info("Admin user created: admin@housiee.in / admin123");
+  }
+
+  // Seed sample data only if DB is otherwise empty
+  const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(propertiesTable);
   if (Number(count) > 0) return;
 
-  logger.info("Empty database detected — running first-time seed...");
+  logger.info("Empty database detected — running first-time sample data seed...");
 
-  const adminHash = await bcrypt.hash("admin123", 10);
   const userHash = await bcrypt.hash("password", 10);
 
   await db.insert(usersTable).values([
-    { name: "Admin User", email: "admin@housiee.in", phone: "9999999999", passwordHash: adminHash, role: "admin", isVerified: true },
     { name: "Rahul Sharma", email: "rahul@gmail.com", phone: "9876543210", passwordHash: userHash, role: "user", isVerified: true },
     { name: "Priya Patel", email: "priya@gmail.com", phone: "9871234567", passwordHash: userHash, role: "user", isVerified: true },
     { name: "Amit Desai", email: "amit@gmail.com", phone: "9823456789", passwordHash: userHash, role: "user", isVerified: false },
