@@ -1,0 +1,32 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "m-1JYLy6N1Z5hKG5pdQTm"
+uri = "file://artifacts/housiee/public/hero.png"
+type = "image"
+title = "Luxury Ahmedabad Real Estate Hero"
+
+[[generated]]
+id = "6WG3V5Rv-ZHcTB2KPJyaE"
+uri = "file://artifacts/housiee/public/property-1.png"
+type = "image"
+title = "Luxury Villa Exterior"
+
+[[generated]]
+id = "hKHIvXlyugmfJlnp43Htm"
+uri = "file://artifacts/housiee/public/property-2.png"
+type = "image"
+title = "Modern Apartment Interior"
+
+[[generated]]
+id = "_PHCyFz91kL0ZQ6XrxRMb"
+uri = "file://artifacts/housiee/public/property-3.png"
+type = "image"
+title = "Commercial Office Space"
+
+[[generated]]
+id = "ZmKmfyKmOzBY1rv3zgL2P"
+uri = "file://artifacts/housiee/public/project-1.png"
+type = "image"
+title = "Real Estate Project Site"

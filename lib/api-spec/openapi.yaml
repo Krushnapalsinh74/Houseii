@@ -1,22 +1,35 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: HOUSIEE.IN Real Estate Platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: properties
+    description: Property listings
+  - name: projects
+    description: Real estate projects
+  - name: inquiries
+    description: Lead / inquiry management
+  - name: testimonials
+    description: Client testimonials
+  - name: blog
+    description: Blog posts
+  - name: stats
+    description: Platform statistics
+  - name: services
+    description: Services offered
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +37,311 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /properties:
+    get:
+      operationId: listProperties
+      tags: [properties]
+      summary: List properties with filters
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: minPrice
+          in: query
+          schema:
+            type: integer
+        - name: maxPrice
+          in: query
+          schema:
+            type: integer
+        - name: location
+          in: query
+          schema:
+            type: string
+        - name: bedrooms
+          in: query
+          schema:
+            type: integer
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of properties
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyList"
+    post:
+      operationId: createProperty
+      tags: [properties]
+      summary: Create a new property listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+
+  /properties/featured:
+    get:
+      operationId: getFeaturedProperties
+      tags: [properties]
+      summary: Get featured properties for the homepage
+      responses:
+        "200":
+          description: Featured properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Property"
+
+  /properties/{id}:
+    get:
+      operationId: getProperty
+      tags: [properties]
+      summary: Get property details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Property details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateProperty
+      tags: [properties]
+      summary: Update a property
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+    delete:
+      operationId: deleteProperty
+      tags: [properties]
+      summary: Delete a property
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /projects:
+    get:
+      operationId: listProjects
+      tags: [projects]
+      summary: List real estate projects
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+
+  /projects/{id}:
+    get:
+      operationId: getProject
+      tags: [projects]
+      summary: Get project details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Project details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  /inquiries:
+    get:
+      operationId: listInquiries
+      tags: [inquiries]
+      summary: List all inquiries / leads
+      responses:
+        "200":
+          description: List of inquiries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Inquiry"
+    post:
+      operationId: createInquiry
+      tags: [inquiries]
+      summary: Submit a property inquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InquiryInput"
+      responses:
+        "201":
+          description: Inquiry submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inquiry"
+
+  /testimonials:
+    get:
+      operationId: listTestimonials
+      tags: [testimonials]
+      summary: List client testimonials
+      responses:
+        "200":
+          description: Testimonials
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Testimonial"
+
+  /blog:
+    get:
+      operationId: listBlogPosts
+      tags: [blog]
+      summary: List blog posts
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Blog posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BlogPost"
+
+  /blog/{slug}:
+    get:
+      operationId: getBlogPost
+      tags: [blog]
+      summary: Get a blog post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Blog post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+
+  /stats:
+    get:
+      operationId: getPlatformStats
+      tags: [stats]
+      summary: Get platform statistics for homepage
+      responses:
+        "200":
+          description: Platform stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+
+  /services:
+    get:
+      operationId: listServices
+      tags: [services]
+      summary: List all services offered
+      responses:
+        "200":
+          description: Services list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +352,287 @@ components:
       required:
         - status
 
+    Property:
+      type: object
+      required: [id, title, price, location, type, category, status, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: number
+        priceUnit:
+          type: string
+        location:
+          type: string
+        area:
+          type: ["number", "null"]
+        areaUnit:
+          type: string
+        bedrooms:
+          type: ["integer", "null"]
+        bathrooms:
+          type: ["integer", "null"]
+        type:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+        featured:
+          type: boolean
+        images:
+          type: array
+          items:
+            type: string
+        amenities:
+          type: array
+          items:
+            type: string
+        builderName:
+          type: ["string", "null"]
+        possession:
+          type: ["string", "null"]
+        rera:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    PropertyList:
+      type: object
+      required: [properties, total]
+      properties:
+        properties:
+          type: array
+          items:
+            $ref: "#/components/schemas/Property"
+        total:
+          type: integer
+
+    PropertyInput:
+      type: object
+      required: [title, price, location, type, category]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        priceUnit:
+          type: string
+        location:
+          type: string
+        area:
+          type: number
+        areaUnit:
+          type: string
+        bedrooms:
+          type: integer
+        bathrooms:
+          type: integer
+        type:
+          type: string
+        category:
+          type: string
+        featured:
+          type: boolean
+        images:
+          type: array
+          items:
+            type: string
+        amenities:
+          type: array
+          items:
+            type: string
+        builderName:
+          type: string
+        possession:
+          type: string
+        rera:
+          type: string
+
+    PropertyUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        featured:
+          type: boolean
+        status:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+
+    Project:
+      type: object
+      required: [id, name, builderName, location, status, type, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        builderName:
+          type: string
+        location:
+          type: string
+        status:
+          type: string
+        type:
+          type: string
+        minPrice:
+          type: ["number", "null"]
+        maxPrice:
+          type: ["number", "null"]
+        totalUnits:
+          type: ["integer", "null"]
+        images:
+          type: array
+          items:
+            type: string
+        amenities:
+          type: array
+          items:
+            type: string
+        rera:
+          type: ["string", "null"]
+        possession:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    Inquiry:
+      type: object
+      required: [id, name, phone, message, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        phone:
+          type: string
+        message:
+          type: string
+        propertyId:
+          type: ["integer", "null"]
+        inquiryType:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+
+    InquiryInput:
+      type: object
+      required: [name, phone, message]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        message:
+          type: string
+        propertyId:
+          type: integer
+        inquiryType:
+          type: string
+
+    Testimonial:
+      type: object
+      required: [id, clientName, review, rating]
+      properties:
+        id:
+          type: integer
+        clientName:
+          type: string
+        clientImage:
+          type: ["string", "null"]
+        review:
+          type: string
+        rating:
+          type: integer
+        propertyBought:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+
+    BlogPost:
+      type: object
+      required: [id, title, slug, excerpt, category, publishedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: ["string", "null"]
+        category:
+          type: string
+        coverImage:
+          type: ["string", "null"]
+        author:
+          type: string
+        readTime:
+          type: ["integer", "null"]
+        publishedAt:
+          type: string
+
+    PlatformStats:
+      type: object
+      required: [totalProperties, happyClients, totalProjects, developerPartners]
+      properties:
+        totalProperties:
+          type: integer
+        happyClients:
+          type: integer
+        totalProjects:
+          type: integer
+        developerPartners:
+          type: integer
+        propertiesByCategory:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryCount"
+        recentInquiries:
+          type: integer
+
+    CategoryCount:
+      type: object
+      required: [category, count]
+      properties:
+        category:
+          type: string
+        count:
+          type: integer
+
+    Service:
+      type: object
+      required: [id, title, description, icon]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
