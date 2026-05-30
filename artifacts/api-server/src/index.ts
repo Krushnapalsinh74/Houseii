@@ -1,6 +1,7 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 import { pool } from "@workspace/db";
+import { seedIfEmpty } from "./lib/seed";
 
 const rawPort = process.env["PORT"];
 
@@ -30,6 +31,7 @@ async function ensureSessionTable() {
 }
 
 ensureSessionTable()
+  .then(() => seedIfEmpty())
   .then(() => {
     app.listen(port, (err) => {
       if (err) {
@@ -40,6 +42,6 @@ ensureSessionTable()
     });
   })
   .catch((err) => {
-    logger.error({ err }, "Failed to ensure session table");
+    logger.error({ err }, "Failed to start server");
     process.exit(1);
   });
