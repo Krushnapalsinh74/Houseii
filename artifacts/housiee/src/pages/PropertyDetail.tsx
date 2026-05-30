@@ -1,5 +1,5 @@
 import { useRoute } from "wouter";
-import { useGetProperty } from "@workspace/api-client-react";
+import { useGetProperty, getGetPropertyQueryKey } from "@workspace/api-client-react";
 import { MapPin, Bed, Bath, Square, CheckCircle, FileText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ export default function PropertyDetail() {
   const propertyId = params?.id ? parseInt(params.id, 10) : 0;
 
   const { data: property, isLoading } = useGetProperty(propertyId, {
-    query: { enabled: !!propertyId }
+    query: { enabled: !!propertyId, queryKey: getGetPropertyQueryKey(propertyId) }
   });
 
   if (isLoading) {

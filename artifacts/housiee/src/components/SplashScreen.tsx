@@ -11,9 +11,10 @@ export function SplashScreen() {
       const timer = setTimeout(() => {
         setShow(false);
         sessionStorage.setItem("housiee_splash_shown", "true");
-      }, 3500);
+      }, 2500);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, []);
 
   return (
