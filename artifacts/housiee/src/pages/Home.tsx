@@ -606,14 +606,28 @@ function Hero() {
   const properties = listData?.properties ?? [];
   const [current, setCurrent] = useState(0);
   const [, navigate] = useLocation();
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const slides = properties.length > 0 ? properties : [];
   const total = slides.length || HERO_FALLBACKS.length;
 
-  useEffect(() => {
-    const t = setInterval(() => setCurrent((c) => (c + 1) % total), 5000);
-    return () => clearInterval(t);
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => setCurrent((c) => (c + 1) % total), 5000);
   }, [total]);
+
+  useEffect(() => {
+    startTimer();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [startTimer]);
+
+  const goTo = useCallback((idx: number) => {
+    setCurrent((idx + total) % total);
+    startTimer();
+  }, [total, startTimer]);
+
+  const prev = () => goTo(current - 1);
+  const next = () => goTo(current + 1);
 
   const getImg = (idx: number) => {
     const p = slides[idx];
@@ -639,16 +653,32 @@ function Hero() {
             src={getImg(current)}
             alt=""
             className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = HERO_FALLBACKS[0];
-            }}
+            onError={(e) => { (e.target as HTMLImageElement).src = HERO_FALLBACKS[0]; }}
           />
-          {/* Dark gradient: transparent top → dark bottom */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1E]/90 via-[#0A0F1E]/40 to-transparent" />
-          {/* Subtle side vignette */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1E]/30 via-transparent to-[#0A0F1E]/10" />
         </motion.div>
       </AnimatePresence>
+
+      {/* ── Prev / Next arrows ── */}
+      {total > 1 && (
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 hover:border-white/50 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110 shadow-lg"
+            aria-label="Previous property"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 hover:border-white/50 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110 shadow-lg"
+            aria-label="Next property"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
 
       {/* ── Overlaid content ── */}
       <div className="relative z-10 w-full pb-8">
@@ -697,20 +727,25 @@ function Hero() {
           <HeroSearch />
         </div>
 
-        {/* Slide dots */}
+        {/* ── Slide checkpoint dots ── */}
         {total > 1 && (
-          <div className="flex justify-center gap-1.5 mt-5">
+          <div className="flex justify-center items-center gap-2 mt-5">
             {Array.from({ length: total }).map((_, i) => (
               <button
                 key={i}
-                onClick={() => setCurrent(i)}
-                className={cn(
-                  "rounded-full transition-all duration-300",
-                  i === current
-                    ? "bg-white w-6 h-1.5"
-                    : "bg-white/35 hover:bg-white/60 w-1.5 h-1.5"
-                )}
-              />
+                onClick={() => goTo(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                className="group relative flex items-center justify-center"
+              >
+                <span
+                  className={cn(
+                    "block rounded-full transition-all duration-400",
+                    i === current
+                      ? "bg-white w-8 h-2 shadow-[0_0_8px_rgba(255,255,255,0.6)]"
+                      : "bg-white/40 hover:bg-white/70 w-2 h-2"
+                  )}
+                />
+              </button>
             ))}
           </div>
         )}
