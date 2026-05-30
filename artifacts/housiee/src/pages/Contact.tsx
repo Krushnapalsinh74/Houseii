@@ -42,17 +42,17 @@ export default function Contact() {
             </div>
 
             <div className="space-y-8">
-              <div className="bg-[#0F172A] text-white p-8 rounded-2xl shadow-lg border border-white/10">
-                <h3 className="text-2xl font-bold mb-8 font-serif">Contact Information</h3>
+              <div className="bg-[#EFF6FF] border border-[#2563EB]/20 p-8 rounded-2xl shadow-sm">
+                <h3 className="text-2xl font-bold mb-8 font-serif text-[#0F172A]">Contact Information</h3>
                 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center shrink-0">
-                      <MapPin className="w-5 h-5 text-[#F59E0B]" />
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
+                      <MapPin className="w-5 h-5 text-[#2563EB]" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg mb-1">Office Address</h4>
-                      <p className="text-white/70 leading-relaxed">
+                      <h4 className="font-bold text-lg mb-1 text-[#0F172A]">Office Address</h4>
+                      <p className="text-slate-500 leading-relaxed">
                         B-329, Moneyplant Highstreet,<br />
                         Gota, Ahmedabad, Gujarat 382481
                       </p>
@@ -60,32 +60,32 @@ export default function Contact() {
                   </div>
                   
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center shrink-0">
-                      <Phone className="w-5 h-5 text-[#F59E0B]" />
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
+                      <Phone className="w-5 h-5 text-[#2563EB]" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg mb-1">Phone Number</h4>
-                      <p className="text-white/70">+91 92136 99873</p>
+                      <h4 className="font-bold text-lg mb-1 text-[#0F172A]">Phone Number</h4>
+                      <p className="text-slate-500">+91 92136 99873</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center shrink-0">
-                      <Mail className="w-5 h-5 text-[#F59E0B]" />
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
+                      <Mail className="w-5 h-5 text-[#2563EB]" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg mb-1">Email Address</h4>
-                      <p className="text-white/70">info@housiee.in</p>
+                      <h4 className="font-bold text-lg mb-1 text-[#0F172A]">Email Address</h4>
+                      <p className="text-slate-500">info@housiee.in</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center shrink-0">
-                      <Clock className="w-5 h-5 text-[#F59E0B]" />
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
+                      <Clock className="w-5 h-5 text-[#2563EB]" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg mb-1">Office Hours</h4>
-                      <p className="text-white/70">Mon - Sat: 9:00 AM - 7:00 PM<br />Sunday: Closed</p>
+                      <h4 className="font-bold text-lg mb-1 text-[#0F172A]">Office Hours</h4>
+                      <p className="text-slate-500">Mon - Sat: 9:00 AM - 7:00 PM<br />Sunday: Closed</p>
                     </div>
                   </div>
                 </div>

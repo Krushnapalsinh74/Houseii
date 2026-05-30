@@ -112,14 +112,14 @@ export default function Sell() {
     <div className="pt-20 pb-20 min-h-screen bg-[#F8FAFC]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="bg-[#0F172A] rounded-3xl p-8 mb-8 text-white">
+        <div className="bg-[#EFF6FF] border border-[#2563EB]/20 rounded-3xl p-8 mb-8">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-[#F59E0B] rounded-2xl flex items-center justify-center flex-shrink-0">
-              <Upload className="w-7 h-7 text-[#0F172A]" />
+            <div className="w-14 h-14 bg-[#2563EB] rounded-2xl flex items-center justify-center flex-shrink-0">
+              <Upload className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold">Post Your Property</h1>
-              <p className="text-white/60 text-sm mt-1">Hi {user.name}, reach thousands of genuine buyers on HOUSIEE.IN</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#0F172A]">Post Your Property</h1>
+              <p className="text-slate-500 text-sm mt-1">Hi {user.name}, reach thousands of genuine buyers on HOUSIEE.IN</p>
             </div>
           </div>
         </div>

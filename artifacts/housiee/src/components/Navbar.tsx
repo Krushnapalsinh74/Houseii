@@ -39,17 +39,17 @@ export function Navbar() {
     <header
       className={`fixed top-0 z-40 w-full transition-all duration-300 ${
         isScrolled
-          ? "bg-[#0F172A]/95 backdrop-blur-lg border-b border-white/10 shadow-lg py-3"
-          : "bg-transparent py-5"
+          ? "bg-white shadow-md border-b border-slate-200 py-3"
+          : "bg-white/90 backdrop-blur-sm border-b border-slate-100 py-4"
       }`}
     >
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex flex-col flex-shrink-0">
-          <span className="font-serif text-2xl md:text-3xl tracking-widest font-bold text-white leading-none">
+          <span className="font-serif text-2xl md:text-3xl tracking-widest font-bold text-[#0F172A] leading-none">
             HOUSIEE<span className="text-[#F59E0B]">.IN</span>
           </span>
-          <span className="text-[10px] text-white/60 uppercase tracking-wider hidden sm:block mt-0.5">
+          <span className="text-[10px] text-slate-400 uppercase tracking-wider hidden sm:block mt-0.5">
             Real Estate Sales And Marketing
           </span>
         </Link>
@@ -60,8 +60,8 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`transition-colors hover:text-[#F59E0B] whitespace-nowrap ${
-                location === link.href ? "text-[#F59E0B]" : "text-white/85"
+              className={`transition-colors hover:text-[#2563EB] whitespace-nowrap ${
+                location === link.href ? "text-[#2563EB] font-semibold" : "text-slate-600"
               }`}
             >
               {link.label}
@@ -75,7 +75,7 @@ export function Navbar() {
             href="https://wa.me/919213699873"
             target="_blank"
             rel="noreferrer"
-            className="text-white/70 hover:text-[#06B6D4] transition-colors"
+            className="text-slate-400 hover:text-[#06B6D4] transition-colors"
             title="WhatsApp"
           >
             <MessageCircle className="w-5 h-5" />
@@ -85,7 +85,7 @@ export function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl transition-all text-sm"
+                className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-[#0F172A] px-3 py-2 rounded-xl transition-all text-sm"
               >
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#2563EB] to-[#06B6D4] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                   {user.name[0]?.toUpperCase()}
@@ -118,7 +118,7 @@ export function Navbar() {
             <>
               <button
                 onClick={() => openAuthModal("login")}
-                className="text-white/85 hover:text-white text-sm font-medium transition-colors px-3 py-2"
+                className="text-slate-600 hover:text-[#2563EB] text-sm font-medium transition-colors px-3 py-2"
               >
                 Login
               </button>
@@ -133,7 +133,7 @@ export function Navbar() {
 
         {/* Mobile Toggle */}
         <button
-          className="lg:hidden text-white p-2"
+          className="lg:hidden text-slate-600 p-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -143,28 +143,28 @@ export function Navbar() {
 
       {/* Mobile Nav Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-[#0F172A] border-t border-white/10 shadow-2xl">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white border-t border-slate-100 shadow-xl">
           {/* User section */}
           {user ? (
-            <div className="px-4 py-4 border-b border-white/10 flex items-center justify-between">
+            <div className="px-4 py-4 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#2563EB] to-[#06B6D4] flex items-center justify-center text-white font-bold text-sm">
                   {user.name[0]?.toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-sm">{user.name}</p>
-                  <p className="text-white/50 text-xs">{user.email}</p>
+                  <p className="text-[#0F172A] font-semibold text-sm">{user.name}</p>
+                  <p className="text-slate-400 text-xs">{user.email}</p>
                 </div>
               </div>
               <button onClick={() => { logout(); setMobileMenuOpen(false); }}
-                className="text-red-400 hover:text-red-300 text-xs flex items-center gap-1 transition-colors">
+                className="text-red-500 hover:text-red-600 text-xs flex items-center gap-1 transition-colors">
                 <LogOut className="w-3.5 h-3.5" /> Sign out
               </button>
             </div>
           ) : (
-            <div className="px-4 py-4 border-b border-white/10 flex gap-3">
+            <div className="px-4 py-4 border-b border-slate-100 flex gap-3">
               <button onClick={() => { openAuthModal("login"); setMobileMenuOpen(false); }}
-                className="flex-1 border border-white/20 text-white font-semibold py-2.5 rounded-xl text-sm hover:bg-white/10 transition-colors">
+                className="flex-1 border border-slate-200 text-[#0F172A] font-semibold py-2.5 rounded-xl text-sm hover:bg-slate-50 transition-colors">
                 Login
               </button>
               <button onClick={() => { openAuthModal("register"); setMobileMenuOpen(false); }}
@@ -181,10 +181,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-3.5 text-sm border-b border-white/5 transition-colors ${
+                className={`px-4 py-3.5 text-sm border-b border-slate-50 transition-colors ${
                   location === link.href
-                    ? "text-[#F59E0B] font-semibold bg-white/5"
-                    : "text-white/80 hover:text-white hover:bg-white/5"
+                    ? "text-[#2563EB] font-semibold bg-[#EFF6FF]"
+                    : "text-slate-600 hover:text-[#2563EB] hover:bg-slate-50"
                 }`}
               >
                 {link.label}

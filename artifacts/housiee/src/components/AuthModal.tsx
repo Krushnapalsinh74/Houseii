@@ -87,23 +87,23 @@ export function AuthModal() {
           >
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md pointer-events-auto overflow-hidden">
               {/* Header */}
-              <div className="bg-gradient-to-r from-[#0F172A] to-[#1e3a8a] px-8 pt-8 pb-6 relative">
-                <button onClick={closeAuthModal} className="absolute top-5 right-5 text-white/60 hover:text-white transition-colors">
+              <div className="bg-[#EFF6FF] border-b border-slate-100 px-8 pt-8 pb-6 relative">
+                <button onClick={closeAuthModal} className="absolute top-5 right-5 text-slate-400 hover:text-[#0F172A] transition-colors">
                   <X className="w-5 h-5" />
                 </button>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-[#F59E0B] rounded-xl flex items-center justify-center">
-                    <Building2 className="w-5 h-5 text-[#0F172A]" />
+                  <div className="w-10 h-10 bg-[#2563EB] rounded-xl flex items-center justify-center">
+                    <Building2 className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <span className="text-white font-bold text-lg tracking-wide">HOUSIEE<span className="text-[#F59E0B]">.IN</span></span>
-                    <p className="text-white/60 text-xs">Real Estate Sales & Marketing</p>
+                    <span className="text-[#0F172A] font-bold text-lg tracking-wide">HOUSIEE<span className="text-[#F59E0B]">.IN</span></span>
+                    <p className="text-slate-400 text-xs">Real Estate Sales & Marketing</p>
                   </div>
                 </div>
-                <h2 className="text-white text-2xl font-bold">
+                <h2 className="text-[#0F172A] text-2xl font-bold">
                   {authModalMode === "login" ? "Welcome back" : "Create your account"}
                 </h2>
-                <p className="text-white/60 text-sm mt-1">
+                <p className="text-slate-500 text-sm mt-1">
                   {authModalMode === "login"
                     ? "Sign in to access property details and exclusive listings"
                     : "Join thousands of property buyers and sellers on HOUSIEE.IN"}

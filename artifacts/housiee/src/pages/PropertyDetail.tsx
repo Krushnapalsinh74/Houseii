@@ -220,12 +220,12 @@ export default function PropertyDetail() {
           {/* Sidebar */}
           <div className="space-y-4">
             {/* Contact card */}
-            <div className="bg-[#0F172A] rounded-2xl p-6 text-white shadow-xl sticky top-24">
-              <h3 className="font-bold text-lg mb-1">Interested in this property?</h3>
-              <p className="text-white/60 text-sm mb-5">Get in touch with our expert today</p>
+            <div className="bg-white border-2 border-[#2563EB]/15 rounded-2xl p-6 shadow-xl sticky top-24">
+              <h3 className="font-bold text-lg mb-1 text-[#0F172A]">Interested in this property?</h3>
+              <p className="text-slate-400 text-sm mb-5">Get in touch with our expert today</p>
               <a
                 href="tel:+919213699873"
-                className="flex items-center justify-center gap-2 bg-[#F59E0B] hover:bg-[#d97706] text-[#0F172A] font-bold w-full py-3.5 rounded-xl mb-3 transition-colors text-sm"
+                className="flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold w-full py-3.5 rounded-xl mb-3 transition-colors text-sm"
               >
                 <Phone className="w-4 h-4" /> Call Now
               </a>
@@ -237,7 +237,7 @@ export default function PropertyDetail() {
               >
                 <MessageCircle className="w-4 h-4" /> WhatsApp Inquiry
               </a>
-              <div className="mt-5 pt-5 border-t border-white/10 text-center text-xs text-white/50">
+              <div className="mt-5 pt-5 border-t border-slate-100 text-center text-xs text-slate-400">
                 HOUSIEE.IN · B-329, Moneyplant Highstreet, Gota, Ahmedabad
               </div>
             </div>
