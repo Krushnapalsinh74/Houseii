@@ -17,6 +17,54 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
+ * @summary Register a new user
+ */
+export const RegisterBody = zod.object({
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string().optional(),
+  "password": zod.string()
+})
+
+
+/**
+ * @summary Login
+ */
+export const LoginBody = zod.object({
+  "email": zod.string(),
+  "password": zod.string()
+})
+
+export const LoginResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string().nullish(),
+  "role": zod.string()
+})
+
+
+/**
+ * @summary Logout
+ */
+export const LogoutResponse = zod.object({
+  "status": zod.string()
+})
+
+
+/**
+ * @summary Get current user
+ */
+export const GetMeResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string().nullish(),
+  "role": zod.string()
+})
+
+
+/**
  * @summary List properties with filters
  */
 export const ListPropertiesQueryParams = zod.object({
@@ -60,7 +108,7 @@ export const ListPropertiesResponse = zod.object({
 
 
 /**
- * @summary Create a new property listing
+ * @summary Create a new property listing (auth required)
  */
 export const CreatePropertyBody = zod.object({
   "title": zod.string(),
@@ -112,7 +160,7 @@ export const GetFeaturedPropertiesResponse = zod.array(GetFeaturedPropertiesResp
 
 
 /**
- * @summary Get property details
+ * @summary Get full property details (auth required)
  */
 export const GetPropertyParams = zod.object({
   "id": zod.coerce.number()
@@ -245,7 +293,7 @@ export const GetProjectResponse = zod.object({
 
 
 /**
- * @summary List all inquiries / leads
+ * @summary List all inquiries
  */
 export const ListInquiriesResponseItem = zod.object({
   "id": zod.number(),
@@ -334,7 +382,7 @@ export const GetBlogPostResponse = zod.object({
 
 
 /**
- * @summary Get platform statistics for homepage
+ * @summary Get platform statistics
  */
 export const GetPlatformStatsResponse = zod.object({
   "totalProperties": zod.number(),

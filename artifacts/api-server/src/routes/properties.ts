@@ -9,6 +9,7 @@ import {
   UpdatePropertyBody,
   DeletePropertyParams,
 } from "@workspace/api-zod";
+import { requireAuth } from "../middleware/requireAuth";
 
 const router = Router();
 
@@ -20,7 +21,6 @@ router.get("/properties", async (req, res) => {
       return;
     }
     const { type, category, minPrice, maxPrice, location, bedrooms, featured, limit = 20, offset = 0, sort } = query.data;
-
     const conditions = [];
     if (type) conditions.push(eq(propertiesTable.type, type));
     if (category) conditions.push(eq(propertiesTable.category, category));
@@ -29,9 +29,7 @@ router.get("/properties", async (req, res) => {
     if (location) conditions.push(ilike(propertiesTable.location, `%${location}%`));
     if (bedrooms !== undefined) conditions.push(eq(propertiesTable.bedrooms, bedrooms));
     if (featured !== undefined) conditions.push(eq(propertiesTable.featured, featured));
-
     const where = conditions.length > 0 ? and(...conditions) : undefined;
-
     const [properties, countResult] = await Promise.all([
       db.select().from(propertiesTable).where(where).limit(limit).offset(offset).orderBy(
         sort === "price_asc" ? propertiesTable.price :
@@ -40,7 +38,6 @@ router.get("/properties", async (req, res) => {
       ),
       db.select({ count: sql<number>`count(*)` }).from(propertiesTable).where(where),
     ]);
-
     res.json({ properties, total: Number(countResult[0]?.count ?? 0) });
   } catch (err) {
     req.log.error({ err }, "Failed to list properties");
@@ -63,22 +60,8 @@ router.get("/properties/featured", async (req, res) => {
   }
 });
 
-router.post("/properties", async (req, res) => {
-  try {
-    const body = CreatePropertyBody.safeParse(req.body);
-    if (!body.success) {
-      res.status(400).json({ error: "Invalid body" });
-      return;
-    }
-    const [property] = await db.insert(propertiesTable).values(body.data).returning();
-    res.status(201).json(property);
-  } catch (err) {
-    req.log.error({ err }, "Failed to create property");
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.get("/properties/:id", async (req, res) => {
+// Protected: full property details require login
+router.get("/properties/:id", requireAuth, async (req, res) => {
   try {
     const params = GetPropertyParams.safeParse({ id: Number(req.params.id) });
     if (!params.success) {
@@ -93,6 +76,22 @@ router.get("/properties/:id", async (req, res) => {
     res.json(property);
   } catch (err) {
     req.log.error({ err }, "Failed to get property");
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Protected: posting a property requires login
+router.post("/properties", requireAuth, async (req, res) => {
+  try {
+    const body = CreatePropertyBody.safeParse(req.body);
+    if (!body.success) {
+      res.status(400).json({ error: "Invalid body" });
+      return;
+    }
+    const [property] = await db.insert(propertiesTable).values(body.data).returning();
+    res.status(201).json(property);
+  } catch (err) {
+    req.log.error({ err }, "Failed to create property");
     res.status(500).json({ error: "Internal server error" });
   }
 });

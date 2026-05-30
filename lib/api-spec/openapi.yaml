@@ -8,21 +8,14 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: auth
   - name: properties
-    description: Property listings
   - name: projects
-    description: Real estate projects
   - name: inquiries
-    description: Lead / inquiry management
   - name: testimonials
-    description: Client testimonials
   - name: blog
-    description: Blog posts
   - name: stats
-    description: Platform statistics
   - name: services
-    description: Services offered
 
 paths:
   /healthz:
@@ -37,6 +30,76 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "409":
+          description: Email already registered
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "401":
+          description: Not authenticated
 
   /properties:
     get:
@@ -94,7 +157,7 @@ paths:
     post:
       operationId: createProperty
       tags: [properties]
-      summary: Create a new property listing
+      summary: Create a new property listing (auth required)
       requestBody:
         required: true
         content:
@@ -108,6 +171,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Property"
+        "401":
+          description: Not authenticated
 
   /properties/featured:
     get:
@@ -128,7 +193,7 @@ paths:
     get:
       operationId: getProperty
       tags: [properties]
-      summary: Get property details
+      summary: Get full property details (auth required)
       parameters:
         - name: id
           in: path
@@ -142,6 +207,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Property"
+        "401":
+          description: Not authenticated
         "404":
           description: Not found
     patch:
@@ -228,7 +295,7 @@ paths:
     get:
       operationId: listInquiries
       tags: [inquiries]
-      summary: List all inquiries / leads
+      summary: List all inquiries
       responses:
         "200":
           description: List of inquiries
@@ -318,7 +385,7 @@ paths:
     get:
       operationId: getPlatformStats
       tags: [stats]
-      summary: Get platform statistics for homepage
+      summary: Get platform statistics
       responses:
         "200":
           description: Platform stats
@@ -351,6 +418,43 @@ components:
           type: string
       required:
         - status
+
+    AuthUser:
+      type: object
+      required: [id, name, email, role]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        role:
+          type: string
+
+    RegisterInput:
+      type: object
+      required: [name, email, password]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
 
     Property:
       type: object

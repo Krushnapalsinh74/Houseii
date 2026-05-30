@@ -9,6 +9,27 @@ export interface HealthStatus {
   status: string;
 }
 
+export interface AuthUser {
+  id: number;
+  name: string;
+  email: string;
+  /** @nullable */
+  phone?: string | null;
+  role: string;
+}
+
+export interface RegisterInput {
+  name: string;
+  email: string;
+  phone?: string;
+  password: string;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
 export interface Property {
   id: number;
   title: string;

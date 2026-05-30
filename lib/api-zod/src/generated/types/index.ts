@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './authUser';
 export * from './blogPost';
 export * from './categoryCount';
 export * from './healthStatus';
@@ -14,11 +15,13 @@ export * from './inquiryInput';
 export * from './listBlogPostsParams';
 export * from './listProjectsParams';
 export * from './listPropertiesParams';
+export * from './loginInput';
 export * from './platformStats';
 export * from './project';
 export * from './property';
 export * from './propertyInput';
 export * from './propertyList';
 export * from './propertyUpdate';
+export * from './registerInput';
 export * from './service';
 export * from './testimonial';
