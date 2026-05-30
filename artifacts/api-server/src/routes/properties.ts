@@ -88,7 +88,7 @@ router.post("/properties", requireAuth, async (req, res) => {
       res.status(400).json({ error: "Invalid body" });
       return;
     }
-    const [property] = await db.insert(propertiesTable).values(body.data).returning();
+    const [property] = await db.insert(propertiesTable).values({ ...body.data, userId: req.session.userId ?? null }).returning();
     res.status(201).json(property);
   } catch (err) {
     req.log.error({ err }, "Failed to create property");

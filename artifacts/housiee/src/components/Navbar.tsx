@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, MessageCircle, User, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, MessageCircle, User, LogOut, ChevronDown, Shield } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export function Navbar() {
@@ -105,6 +105,13 @@ export function Navbar() {
                   >
                     <User className="w-4 h-4 text-[#2563EB]" /> Post Property
                   </Link>
+                  {user.role === "admin" && (
+                    <Link href="/admin"
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-amber-700 hover:bg-amber-50 transition-colors border-t border-slate-100"
+                    >
+                      <Shield className="w-4 h-4 text-amber-500" /> Admin Panel
+                    </Link>
+                  )}
                   <button
                     onClick={() => { logout(); setUserMenuOpen(false); }}
                     className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors border-t border-slate-100"

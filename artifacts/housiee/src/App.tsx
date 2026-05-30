@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,9 +23,37 @@ import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
 
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminProperties from "@/pages/admin/AdminProperties";
+import AdminProjects from "@/pages/admin/AdminProjects";
+import AdminInquiries from "@/pages/admin/AdminInquiries";
+import { AdminGuard } from "@/pages/admin/AdminGuard";
+
 const queryClient = new QueryClient();
 
+function AdminRoutes() {
+  return (
+    <AdminGuard>
+      <Switch>
+        <Route path="/admin" component={AdminDashboard} />
+        <Route path="/admin/users" component={AdminUsers} />
+        <Route path="/admin/properties" component={AdminProperties} />
+        <Route path="/admin/projects" component={AdminProjects} />
+        <Route path="/admin/inquiries" component={AdminInquiries} />
+      </Switch>
+    </AdminGuard>
+  );
+}
+
 function Router() {
+  const [location] = useLocation();
+  const isAdmin = location.startsWith("/admin");
+
+  if (isAdmin) {
+    return <AdminRoutes />;
+  }
+
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <Navbar />

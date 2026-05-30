@@ -22,6 +22,7 @@ export const propertiesTable = pgTable("properties", {
   builderName: text("builder_name"),
   possession: text("possession"),
   rera: text("rera"),
+  userId: integer("user_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
