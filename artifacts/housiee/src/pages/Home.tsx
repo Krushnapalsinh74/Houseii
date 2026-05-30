@@ -753,6 +753,9 @@ function Hero() {
       <div className="absolute bottom-1/3 right-1/4 w-56 h-56 rounded-full bg-[#06B6D4]/6 blur-3xl pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center pt-24 pb-10">
+        {/* Property slider above the filter */}
+        <HeroPropertySlider />
+
         {/* Search / filter container */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -762,9 +765,6 @@ function Hero() {
         >
           <HeroSearch />
         </motion.div>
-
-        {/* Property slider directly below search */}
-        <HeroPropertySlider />
       </div>
     </section>
   );
