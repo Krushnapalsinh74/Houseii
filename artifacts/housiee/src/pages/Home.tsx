@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
-import { motion, useInView, animate } from "framer-motion";
+import { motion, AnimatePresence, useInView, animate } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import {
   Search, MapPin, ChevronLeft, ChevronRight, ArrowRight,
@@ -592,183 +592,133 @@ function CategoryBrowse() {
   );
 }
 
-// ─── Hero Property Slider ──────────────────────────────────────────────────────
-
-function HeroPropertySlider() {
-  const { data: listData } = useListProperties({ limit: 20 });
-  const properties = listData?.properties ?? [];
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    dragFree: true,
-    containScroll: "trimSnaps",
-    align: "start",
-  });
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(true);
-  const [, navigate] = useLocation();
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
-    onSelect();
-  }, [emblaApi, onSelect]);
-
-  const FALLBACK = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80";
-
-  if (properties.length === 0) return null;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.7 }}
-      className="w-full mt-8"
-    >
-      {/* Slider header */}
-      <div className="flex items-center justify-between mb-4 px-1">
-        <p className="text-slate-500 text-xs sm:text-sm font-medium uppercase tracking-wider">
-          Featured Listings
-        </p>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => emblaApi?.scrollPrev()}
-            disabled={!canScrollPrev}
-            className="w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:border-[#2563EB] hover:text-[#2563EB] disabled:opacity-30 transition-all shadow-sm"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => emblaApi?.scrollNext()}
-            disabled={!canScrollNext}
-            className="w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:border-[#2563EB] hover:text-[#2563EB] disabled:opacity-30 transition-all shadow-sm"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-          <Link
-            href="/properties"
-            className="ml-1 text-[#2563EB] hover:text-[#1d4ed8] text-xs font-semibold flex items-center gap-1 transition-colors"
-          >
-            View all <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Carousel */}
-      <div className="overflow-hidden -mx-1" ref={emblaRef}>
-        <div className="flex gap-3 px-1">
-          {properties.map((p) => {
-            const img =
-              Array.isArray(p.images) && p.images.length > 0
-                ? p.images[0]
-                : FALLBACK;
-            return (
-              <motion.div
-                key={p.id}
-                whileHover={{ y: -3, scale: 1.01 }}
-                transition={{ duration: 0.2 }}
-                onClick={() => navigate(`/properties/${p.id}`)}
-                className="flex-shrink-0 w-56 sm:w-64 cursor-pointer rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-[#2563EB]/40 hover:shadow-md transition-all select-none shadow-sm"
-              >
-                {/* Image */}
-                <div className="relative h-36 overflow-hidden">
-                  <img
-                    src={img}
-                    alt={p.title}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = FALLBACK;
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/70 via-transparent to-transparent" />
-                  {p.featured && (
-                    <span className="absolute top-2 left-2 bg-[#F59E0B] text-[#0F172A] text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded">
-                      Featured
-                    </span>
-                  )}
-                  <span className="absolute bottom-2 left-2 text-white font-bold text-sm drop-shadow-md">
-                    {formatPrice(p.price, p.priceUnit ?? "Lac")}
-                  </span>
-                </div>
-
-                {/* Info */}
-                <div className="p-3">
-                  <p className="text-[#2563EB] text-[10px] font-semibold uppercase tracking-wider mb-1">
-                    {p.category}
-                  </p>
-                  <h3 className="text-[#0F172A] text-xs font-semibold leading-snug mb-2 line-clamp-2">
-                    {p.title}
-                  </h3>
-                  <div className="flex items-center gap-1 text-slate-400 text-[10px] mb-2">
-                    <MapPin className="w-2.5 h-2.5 flex-shrink-0" />
-                    <span className="truncate">{p.location}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-slate-400 text-[10px] border-t border-slate-100 pt-2">
-                    {p.bedrooms != null && (
-                      <span className="flex items-center gap-1">
-                        <BedDouble className="w-3 h-3" />
-                        {p.bedrooms}
-                      </span>
-                    )}
-                    {p.bathrooms != null && (
-                      <span className="flex items-center gap-1">
-                        <Bath className="w-3 h-3" />
-                        {p.bathrooms}
-                      </span>
-                    )}
-                    {p.area != null && (
-                      <span className="flex items-center gap-1">
-                        <Maximize2 className="w-3 h-3" />
-                        {p.area} {p.areaUnit ?? "sq.ft"}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 // ─── Hero Section ──────────────────────────────────────────────────────────────
 
+const HERO_FALLBACKS = [
+  "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80",
+  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=80",
+  "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&q=80",
+];
+
 function Hero() {
+  const { data: listData } = useListProperties({ limit: 12 });
+  const properties = listData?.properties ?? [];
+  const [current, setCurrent] = useState(0);
+  const [, navigate] = useLocation();
+
+  const slides = properties.length > 0 ? properties : [];
+  const total = slides.length || HERO_FALLBACKS.length;
+
+  useEffect(() => {
+    const t = setInterval(() => setCurrent((c) => (c + 1) % total), 5000);
+    return () => clearInterval(t);
+  }, [total]);
+
+  const getImg = (idx: number) => {
+    const p = slides[idx];
+    if (p && Array.isArray(p.images) && p.images.length > 0) return p.images[0];
+    return HERO_FALLBACKS[idx % HERO_FALLBACKS.length];
+  };
+
+  const currentSlide = slides[current];
+
   return (
-    <section className="relative flex flex-col items-center overflow-hidden">
-      {/* Light gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-[#EFF6FF] to-[#F0FDFF]">
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#F8FAFC] to-transparent" />
-      </div>
+    <section className="relative min-h-screen flex flex-col justify-end overflow-hidden">
+      {/* ── Background slideshow ── */}
+      <AnimatePresence mode="sync">
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.4, ease: "easeInOut" }}
+          className="absolute inset-0"
+        >
+          <img
+            src={getImg(current)}
+            alt=""
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = HERO_FALLBACKS[0];
+            }}
+          />
+          {/* Dark gradient: transparent top → dark bottom */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1E]/90 via-[#0A0F1E]/40 to-transparent" />
+          {/* Subtle side vignette */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1E]/30 via-transparent to-[#0A0F1E]/10" />
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-[#2563EB]/6 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/3 right-1/4 w-56 h-56 rounded-full bg-[#06B6D4]/6 blur-3xl pointer-events-none" />
-
-      <div className="relative z-10 w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center pt-24 pb-10">
-        {/* Property slider above the filter */}
-        <HeroPropertySlider />
+      {/* ── Overlaid content ── */}
+      <div className="relative z-10 w-full pb-8">
+        {/* Current property info */}
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+          <AnimatePresence mode="wait">
+            {currentSlide && (
+              <motion.div
+                key={`info-${current}`}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-end justify-between flex-wrap gap-4"
+              >
+                <div>
+                  <p className="text-[#F59E0B] text-[11px] font-bold uppercase tracking-widest mb-1">
+                    {currentSlide.category}
+                  </p>
+                  <h2 className="text-white text-xl sm:text-2xl font-bold mb-1.5 drop-shadow-lg max-w-lg">
+                    {currentSlide.title}
+                  </h2>
+                  <p className="text-white/65 text-sm flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-white/50" />
+                    {currentSlide.location}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-white font-bold text-lg drop-shadow-md">
+                    {formatPrice(currentSlide.price, currentSlide.priceUnit ?? "Lac")}
+                  </span>
+                  <button
+                    onClick={() => navigate(`/properties/${currentSlide.id}`)}
+                    className="text-xs bg-white/95 hover:bg-white text-[#0F172A] font-semibold px-4 py-1.5 rounded-full transition-all shadow-lg hover:shadow-xl"
+                  >
+                    View →
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Search / filter container */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="w-full"
-        >
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <HeroSearch />
-        </motion.div>
+        </div>
+
+        {/* Slide dots */}
+        {total > 1 && (
+          <div className="flex justify-center gap-1.5 mt-5">
+            {Array.from({ length: total }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={cn(
+                  "rounded-full transition-all duration-300",
+                  i === current
+                    ? "bg-white w-6 h-1.5"
+                    : "bg-white/35 hover:bg-white/60 w-1.5 h-1.5"
+                )}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 }
+
 
 // ─── Property Sliders by Category ─────────────────────────────────────────────
 
