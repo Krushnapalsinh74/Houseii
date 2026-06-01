@@ -8,7 +8,7 @@ function LoginGate({ onLogin }: { onLogin: () => void }) {
     <div className="pt-24 pb-20 min-h-screen bg-[#F8FAFC] flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
         <div className="bg-white rounded-3xl shadow-xl p-8 sm:p-10 border border-slate-100">
-          <div className="w-20 h-20 bg-gradient-to-br from-[#0F172A] to-[#2563EB] rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-[#0F172A] to-[#D97706] rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Lock className="w-9 h-9 text-white" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#0F172A] mb-3">
@@ -23,7 +23,7 @@ function LoginGate({ onLogin }: { onLogin: () => void }) {
               { icon: <TrendingUp className="w-4 h-4" />, label: "Fast Closures" },
               { icon: <Shield className="w-4 h-4" />, label: "Safe & Secure" },
             ].map((item) => (
-              <div key={item.label} className="bg-[#F8FAFC] rounded-xl p-3 flex flex-col items-center gap-1.5 text-[#2563EB]">
+              <div key={item.label} className="bg-[#F8FAFC] rounded-xl p-3 flex flex-col items-center gap-1.5 text-[#D97706]">
                 {item.icon}
                 <span className="text-[10px] font-medium text-[#0F172A] text-center leading-tight">{item.label}</span>
               </div>
@@ -31,7 +31,7 @@ function LoginGate({ onLogin }: { onLogin: () => void }) {
           </div>
           <button
             onClick={onLogin}
-            className="w-full bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold py-4 rounded-xl transition-colors text-sm mb-3"
+            className="w-full bg-[#D97706] hover:bg-[#B45309] text-white font-bold py-4 rounded-xl transition-colors text-sm mb-3"
           >
             Sign In / Register Free
           </button>
@@ -82,7 +82,7 @@ export default function Sell() {
   };
 
   if (authLoading) {
-    return <div className="pt-24 min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#2563EB]" /></div>;
+    return <div className="pt-24 min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#D97706]" /></div>;
   }
 
   if (!user) return <LoginGate onLogin={() => openAuthModal("login")} />;
@@ -96,7 +96,7 @@ export default function Sell() {
           </div>
           <h2 className="text-2xl font-bold text-[#0F172A] mb-3">Property Listed!</h2>
           <p className="text-slate-500 text-sm mb-6">Your property has been submitted successfully. Our team will review and publish it within 24 hours.</p>
-          <button onClick={() => window.location.reload()} className="bg-[#2563EB] text-white px-8 py-3 rounded-xl font-semibold text-sm hover:bg-[#1d4ed8] transition-colors">
+          <button onClick={() => window.location.reload()} className="bg-[#D97706] text-white px-8 py-3 rounded-xl font-semibold text-sm hover:bg-[#B45309] transition-colors">
             List Another Property
           </button>
         </div>
@@ -105,16 +105,16 @@ export default function Sell() {
   }
 
   const labelClass = "text-sm font-semibold text-[#0F172A] block mb-1.5";
-  const inputClass = "w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-[#0F172A] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10 transition-all bg-white placeholder:text-slate-400";
+  const inputClass = "w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-[#0F172A] focus:outline-none focus:border-[#D97706] focus:ring-2 focus:ring-[#D97706]/10 transition-all bg-white placeholder:text-slate-400";
   const selectClass = inputClass + " cursor-pointer";
 
   return (
     <div className="pt-20 pb-20 min-h-screen bg-[#F8FAFC]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="bg-[#EFF6FF] border border-[#2563EB]/20 rounded-3xl p-8 mb-8">
+        <div className="bg-[#FFFBEB] border border-[#D97706]/20 rounded-3xl p-8 mb-8">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-[#2563EB] rounded-2xl flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 bg-[#D97706] rounded-2xl flex items-center justify-center flex-shrink-0">
               <Upload className="w-7 h-7 text-white" />
             </div>
             <div>
@@ -236,7 +236,7 @@ export default function Sell() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-[#2563EB] hover:bg-[#1d4ed8] disabled:opacity-60 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+            className="w-full bg-[#D97706] hover:bg-[#B45309] disabled:opacity-60 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             {isPending ? "Submitting..." : "Post Property for Free"}

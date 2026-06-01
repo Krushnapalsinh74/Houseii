@@ -44,8 +44,19 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     adminFetch("/api/admin/stats")
-      .then(setStats)
-      .catch(console.error)
+      .then((data) => {
+        if (!data || Object.keys(data).length === 0) throw new Error("Empty mock data");
+        setStats(data);
+      })
+      .catch(() => {
+        setStats({
+          totalUsers: 0,
+          totalProperties: 0,
+          totalProjects: 0,
+          totalInquiries: 0,
+          featuredProperties: 0,
+        });
+      })
       .finally(() => setLoading(false));
   }, []);
 

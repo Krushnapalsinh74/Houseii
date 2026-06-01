@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -15,7 +16,6 @@ import Properties from "@/pages/Properties";
 import PropertyDetail from "@/pages/PropertyDetail";
 import Projects from "@/pages/Projects";
 import Buy from "@/pages/Buy";
-import Sell from "@/pages/Sell";
 import Commercial from "@/pages/Commercial";
 import Services from "@/pages/Services";
 import About from "@/pages/About";
@@ -50,6 +50,10 @@ function Router() {
   const [location] = useLocation();
   const isAdmin = location.startsWith("/admin");
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   if (isAdmin) {
     return <AdminRoutes />;
   }
@@ -64,7 +68,6 @@ function Router() {
           <Route path="/properties/:id" component={PropertyDetail} />
           <Route path="/projects" component={Projects} />
           <Route path="/buy" component={Buy} />
-          <Route path="/sell" component={Sell} />
           <Route path="/commercial" component={Commercial} />
           <Route path="/services" component={Services} />
           <Route path="/about" component={About} />

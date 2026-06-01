@@ -43,8 +43,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchMe = useCallback(async () => {
     try {
+      // Check local storage for mock session first
+      const stored = localStorage.getItem("mock_user");
+      if (stored) {
+        setUser(JSON.parse(stored));
+        setLoading(false);
+        return;
+      }
+      
       const data = await apiFetch("/api/auth/me");
-      setUser(data as AuthUser);
+      if (data && typeof data === 'object' && 'id' in data) {
+        setUser(data as AuthUser);
+      } else {
+        setUser(null);
+      }
     } catch {
       setUser(null);
     } finally {
@@ -55,26 +67,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => { fetchMe(); }, [fetchMe]);
 
   const login = async (email: string, password: string) => {
-    const data = await apiFetch("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
-    setUser(data as AuthUser);
+    // Mock authentication for frontend-only testing
+    const mockUser: AuthUser = {
+      id: 1,
+      name: email.split('@')[0],
+      email,
+      phone: null,
+      role: email.toLowerCase().includes("admin") ? "admin" : "user",
+    };
+    localStorage.setItem("mock_user", JSON.stringify(mockUser));
+    setUser(mockUser);
     setAuthModalOpen(false);
   };
 
   const register = async (name: string, email: string, phone: string, password: string) => {
-    const data = await apiFetch("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify({ name, email, phone, password }),
-    });
-    setUser(data as AuthUser);
+    // Mock authentication for frontend-only testing
+    const mockUser: AuthUser = {
+      id: Math.floor(Math.random() * 1000),
+      name,
+      email,
+      phone,
+      role: email.toLowerCase().includes("admin") ? "admin" : "user",
+    };
+    localStorage.setItem("mock_user", JSON.stringify(mockUser));
+    setUser(mockUser);
     setAuthModalOpen(false);
   };
 
   const logout = async () => {
-    await apiFetch("/api/auth/logout", { method: "POST" });
-    setUser(null);
+    try {
+      localStorage.removeItem("mock_user");
+      await apiFetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // Ignore network errors on logout to ensure local state is cleared
+    } finally {
+      setUser(null);
+    }
   };
 
   const openAuthModal = (mode: "login" | "register" = "login") => {

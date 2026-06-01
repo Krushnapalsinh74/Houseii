@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Building2, Search, Star, StarOff, Trash2, Eye, Filter } from "lucide-react";
+import { Building2, Search, Star, StarOff, Trash2, Eye, Plus, X } from "lucide-react";
 import { AdminLayout } from "./AdminLayout";
 import { Link } from "wouter";
 
@@ -29,6 +29,7 @@ interface Property {
   images: string[];
   createdAt: string;
   userId: number | null;
+  reelUrl?: string;
 }
 
 function formatPrice(price: number, unit: string) {
@@ -44,8 +45,23 @@ export default function AdminProperties() {
   const [filterFeatured, setFilterFeatured] = useState<"all" | "featured" | "normal">("all");
   const [filterCategory, setFilterCategory] = useState("all");
   const [updating, setUpdating] = useState<number | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  
+  // New Property Form State
+  const [newProp, setNewProp] = useState<Partial<Property> & { imageUrl?: string }>({
+    title: "", location: "", price: 0, priceUnit: "Lac", category: "Apartment", type: "buy", status: "available", featured: false, reelUrl: "", imageUrl: ""
+  });
 
   useEffect(() => {
+    try {
+      const stored = localStorage.getItem("mocked_properties");
+      if (stored) {
+        setProperties(JSON.parse(stored));
+        setLoading(false);
+        return;
+      }
+    } catch {}
+
     adminFetch("/api/admin/properties")
       .then(setProperties)
       .catch(console.error)
@@ -54,37 +70,57 @@ export default function AdminProperties() {
 
   const toggleFeatured = async (property: Property) => {
     setUpdating(property.id);
-    try {
-      const updated = await adminFetch(`/api/admin/properties/${property.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ featured: !property.featured }),
-      });
-      setProperties(prev => prev.map(p => p.id === updated.id ? updated : p));
-    } catch {
-      alert("Failed to update property");
-    } finally {
-      setUpdating(null);
-    }
+    const updated = { ...property, featured: !property.featured };
+    setProperties(prev => {
+      const newList = prev.map(p => p.id === updated.id ? updated : p);
+      try { localStorage.setItem("mocked_properties", JSON.stringify(newList)); } catch {}
+      return newList;
+    });
+    setUpdating(null);
   };
 
   const toggleStatus = async (property: Property) => {
-    const nextStatus = property.status === "available" ? "sold" : "available";
     setUpdating(property.id);
-    try {
-      const updated = await adminFetch(`/api/admin/properties/${property.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ status: nextStatus }),
-      });
-      setProperties(prev => prev.map(p => p.id === updated.id ? updated : p));
-    } finally {
-      setUpdating(null);
-    }
+    const nextStatus = property.status === "available" ? "sold" : "available";
+    const updated = { ...property, status: nextStatus as "available" | "sold" };
+    setProperties(prev => {
+      const newList = prev.map(p => p.id === updated.id ? updated : p);
+      try { localStorage.setItem("mocked_properties", JSON.stringify(newList)); } catch {}
+      return newList;
+    });
+    setUpdating(null);
   };
 
   const deleteProperty = async (property: Property) => {
     if (!confirm(`Delete "${property.title}"? This cannot be undone.`)) return;
-    await adminFetch(`/api/admin/properties/${property.id}`, { method: "DELETE" });
-    setProperties(prev => prev.filter(p => p.id !== property.id));
+    setProperties(prev => {
+      const newList = prev.filter(p => p.id !== property.id);
+      try { localStorage.setItem("mocked_properties", JSON.stringify(newList)); } catch {}
+      return newList;
+    });
+  };
+
+  const handleAddProperty = (e: React.FormEvent) => {
+    e.preventDefault();
+    const propertyToSave: Property = {
+      ...(newProp as Property),
+      id: Math.floor(Math.random() * 10000) + 100,
+      createdAt: new Date().toISOString(),
+      images: newProp.imageUrl ? [newProp.imageUrl] : ["/project-1.png"],
+      bedrooms: 3, bathrooms: 3, area: 1500, areaUnit: "sq.ft"
+    };
+    
+    // Mock saving the property to state since there's no backend
+    setProperties(prev => {
+      const updated = [propertyToSave, ...prev];
+      try {
+        localStorage.setItem("mocked_properties", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    
+    setShowAddModal(false);
+    setNewProp({ title: "", location: "", price: 0, priceUnit: "Lac", category: "Apartment", type: "buy", status: "available", featured: false, reelUrl: "", imageUrl: "" });
   };
 
   const categories = ["all", ...Array.from(new Set(properties.map(p => p.category)))];
@@ -110,6 +146,12 @@ export default function AdminProperties() {
               {properties.length} total · <span className="text-amber-600 font-medium">{featuredCount} featured</span> (shown in homepage slider)
             </p>
           </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" /> Add Property
+          </button>
         </div>
 
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4 text-sm text-amber-800">
@@ -216,10 +258,12 @@ export default function AdminProperties() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex items-center justify-end gap-1">
-                            <Link href={`/properties/${p.id}`}>
-                              <a className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors" target="_blank">
-                                <Eye className="w-4 h-4" />
-                              </a>
+                            <Link 
+                              href={`/properties/${p.id}`}
+                              className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors inline-block"
+                              target="_blank"
+                            >
+                              <Eye className="w-4 h-4" />
                             </Link>
                             <button
                               onClick={() => deleteProperty(p)}
@@ -235,6 +279,104 @@ export default function AdminProperties() {
                 </table>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Add Property Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-emerald-500" /> Post New Property
+                </h3>
+                <button onClick={() => setShowAddModal(false)} className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-500 transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div className="p-6 overflow-y-auto">
+                <form id="add-prop-form" onSubmit={handleAddProperty} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Property Title</label>
+                    <input required value={newProp.title} onChange={e => setNewProp({...newProp, title: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Luxury Villa in Gota" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Location</label>
+                    <input required value={newProp.location} onChange={e => setNewProp({...newProp, location: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. SG Highway, Ahmedabad" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">Price</label>
+                      <input required type="number" min="1" value={newProp.price || ""} onChange={e => setNewProp({...newProp, price: parseFloat(e.target.value)})} className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. 75" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">Unit</label>
+                      <select value={newProp.priceUnit} onChange={e => setNewProp({...newProp, priceUnit: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="Lac">Lacs</option>
+                        <option value="Cr">Crores</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Category</label>
+                    <select value={newProp.category} onChange={e => setNewProp({...newProp, category: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                      <option value="Apartment">Apartment</option>
+                      <option value="Villa">Villa</option>
+                      <option value="Bungalow">Bungalow</option>
+                      <option value="Office">Office</option>
+                      <option value="Plot">Plot</option>
+                    </select>
+                  </div>
+                  
+                  {/* IMAGE UPLOAD FIELD */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Upload Cover Image (Optional)</label>
+                    <input 
+                      type="file"
+                      accept="image/*"
+                      onChange={e => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setNewProp({...newProp, imageUrl: reader.result as string});
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }} 
+                      className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" 
+                    />
+                    {newProp.imageUrl && newProp.imageUrl.startsWith("data:image") && (
+                      <div className="mt-2">
+                        <img src={newProp.imageUrl} alt="Preview" className="h-16 w-24 rounded-lg object-cover border border-slate-200" />
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* REEL URL FIELD */}
+                  <div className="bg-amber-50 p-4 rounded-xl border border-amber-100">
+                    <label className="block text-xs font-semibold text-amber-800 mb-1">Property Reel / Video URL (Optional)</label>
+                    <p className="text-[10px] text-amber-600 mb-2 leading-tight">Add a link to an Instagram Reel, YouTube Shorts, or any video. This will be embedded on the property detail page.</p>
+                    <input 
+                      value={newProp.reelUrl || ""} 
+                      onChange={e => setNewProp({...newProp, reelUrl: e.target.value})} 
+                      className="w-full px-3 py-2 border border-amber-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500 bg-white" 
+                      placeholder="https://www.instagram.com/reel/..." 
+                    />
+                  </div>
+                </form>
+              </div>
+              
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-xl transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" form="add-prop-form" className="px-4 py-2 text-sm font-semibold text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl transition-colors shadow-sm">
+                  Post Property
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

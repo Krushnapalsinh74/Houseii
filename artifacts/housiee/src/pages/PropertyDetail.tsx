@@ -15,7 +15,7 @@ function LoginGate({ onLogin }: { onLogin: () => void }) {
     <div className="pt-24 pb-20 min-h-screen bg-[#F8FAFC] flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
         <div className="bg-white rounded-3xl shadow-xl p-8 sm:p-10 border border-slate-100">
-          <div className="w-20 h-20 bg-gradient-to-br from-[#0F172A] to-[#2563EB] rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-[#0F172A] to-[#D97706] rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Lock className="w-9 h-9 text-white" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#0F172A] mb-3">
@@ -31,7 +31,7 @@ function LoginGate({ onLogin }: { onLogin: () => void }) {
               { icon: <Star className="w-4 h-4" />, label: "Premium Access" },
               { icon: <CheckCircle2 className="w-4 h-4" />, label: "Free Account" },
             ].map((item) => (
-              <div key={item.label} className="bg-[#F8FAFC] rounded-xl p-3 flex flex-col items-center gap-1.5 text-[#2563EB]">
+              <div key={item.label} className="bg-[#F8FAFC] rounded-xl p-3 flex flex-col items-center gap-1.5 text-[#D97706]">
                 {item.icon}
                 <span className="text-[10px] font-medium text-[#0F172A] text-center leading-tight">{item.label}</span>
               </div>
@@ -40,7 +40,7 @@ function LoginGate({ onLogin }: { onLogin: () => void }) {
 
           <button
             onClick={onLogin}
-            className="w-full bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold py-4 rounded-xl transition-colors text-sm mb-3"
+            className="w-full bg-[#D97706] hover:bg-[#B45309] text-white font-bold py-4 rounded-xl transition-colors text-sm mb-3"
           >
             Sign In / Register Free
           </button>
@@ -58,17 +58,34 @@ export default function PropertyDetail() {
   const propertyId = params?.id ? parseInt(params.id, 10) : 0;
   const { user, loading: authLoading, openAuthModal } = useAuth();
 
-  const { data: property, isLoading } = useGetProperty(propertyId, {
+  const { data: apiProperty, isLoading } = useGetProperty(propertyId, {
     query: {
       enabled: !!propertyId && !!user,
       queryKey: getGetPropertyQueryKey(propertyId),
     },
   });
 
+  let property = apiProperty;
+  try {
+    const stored = localStorage.getItem("mocked_properties");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const found = parsed.find((p: any) => p.id === propertyId);
+      if (found) {
+        property = found; // Local storage has priority for newly added ones
+      }
+    }
+  } catch {}
+
+  // If still not found and API returned a partial dummy without title, set to null
+  if (property && !property.title && !isLoading) {
+    property = null;
+  }
+
   if (authLoading) {
     return (
       <div className="pt-24 pb-20 min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-3 border-[#2563EB] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-3 border-[#D97706] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -105,18 +122,18 @@ export default function PropertyDetail() {
   const imgs = Array.isArray(property.images) && property.images.length > 0 ? property.images : [FALLBACK];
 
   return (
-    <div className="pt-20 pb-20 min-h-screen bg-[#F8FAFC]">
+    <div className="pb-20 min-h-screen bg-[#F8FAFC] -mt-20">
       {/* Hero image */}
       <div className="w-full h-[55vh] sm:h-[65vh] relative overflow-hidden bg-slate-200">
-        <img src={imgs[0]} alt={property.title} className="w-full h-full object-cover"
+        <img src={imgs[0]} alt={property.title || "Property"} className="w-full h-full object-cover"
           onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/60 to-transparent" />
-        <div className="absolute bottom-6 left-6 right-6">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/80 via-[#0F172A]/20 to-transparent" />
+        <div className="absolute bottom-6 left-6 right-6 max-w-6xl mx-auto px-4">
           <span className="inline-block bg-[#F59E0B] text-[#0F172A] text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-2">
-            {property.category}
+            {property.category || "Property"}
           </span>
           <h1 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug drop-shadow-lg">
-            {property.title}
+            {property.title || "Untitled Property"}
           </h1>
         </div>
       </div>
@@ -129,43 +146,43 @@ export default function PropertyDetail() {
             <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
                 <div>
-                  <p className="text-[#2563EB] text-sm font-semibold mb-1">
-                    <MapPin className="w-3.5 h-3.5 inline mr-1" />{property.location}
+                  <p className="text-[#D97706] text-sm font-semibold mb-1">
+                    <MapPin className="w-3.5 h-3.5 inline mr-1" />{property.location || "Location not specified"}
                   </p>
                   <div className="text-3xl font-bold text-[#0F172A]">
-                    {formatPrice(property.price, property.priceUnit ?? "Lac")}
+                    {property.price ? formatPrice(property.price, property.priceUnit ?? "Lac") : "Price on Request"}
                   </div>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${property.status === "available" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}>
-                  {property.status === "available" ? "Available" : property.status}
+                  {property.status === "available" ? "Available" : (property.status || "Unknown")}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-5 border-y border-slate-100">
                 {property.bedrooms != null && (
                   <div className="text-center">
-                    <BedDouble className="w-5 h-5 text-[#2563EB] mx-auto mb-1" />
+                    <BedDouble className="w-5 h-5 text-[#D97706] mx-auto mb-1" />
                     <p className="font-bold text-[#0F172A]">{property.bedrooms}</p>
                     <p className="text-slate-500 text-xs">Bedrooms</p>
                   </div>
                 )}
                 {property.bathrooms != null && (
                   <div className="text-center">
-                    <Bath className="w-5 h-5 text-[#2563EB] mx-auto mb-1" />
+                    <Bath className="w-5 h-5 text-[#D97706] mx-auto mb-1" />
                     <p className="font-bold text-[#0F172A]">{property.bathrooms}</p>
                     <p className="text-slate-500 text-xs">Bathrooms</p>
                   </div>
                 )}
                 {property.area != null && (
                   <div className="text-center">
-                    <Maximize2 className="w-5 h-5 text-[#2563EB] mx-auto mb-1" />
+                    <Maximize2 className="w-5 h-5 text-[#D97706] mx-auto mb-1" />
                     <p className="font-bold text-[#0F172A]">{property.area}</p>
                     <p className="text-slate-500 text-xs">{property.areaUnit ?? "sq.ft"}</p>
                   </div>
                 )}
                 {property.possession && (
                   <div className="text-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#2563EB] mx-auto mb-1" />
+                    <CheckCircle2 className="w-5 h-5 text-[#D97706] mx-auto mb-1" />
                     <p className="font-bold text-[#0F172A] text-xs">{property.possession}</p>
                     <p className="text-slate-500 text-xs">Possession</p>
                   </div>
@@ -187,7 +204,7 @@ export default function PropertyDetail() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {property.amenities.map((a) => (
                     <div key={a} className="flex items-center gap-2 text-sm text-slate-700">
-                      <CheckCircle2 className="w-4 h-4 text-[#2563EB] flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-[#D97706] flex-shrink-0" />
                       {a}
                     </div>
                   ))}
@@ -215,17 +232,35 @@ export default function PropertyDetail() {
                 </div>
               </div>
             )}
+
+            {/* Property Reel / Video */}
+            {(property as any).reelUrl && (
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100 shadow-sm">
+                <h3 className="font-bold text-[#0F172A] text-lg mb-2 flex items-center gap-2">
+                  <Star className="w-5 h-5 text-[#D97706] fill-[#D97706]" /> Property Video Tour
+                </h3>
+                <p className="text-slate-600 text-sm mb-4">Experience a virtual walkthrough of this property.</p>
+                <a 
+                  href={((property as any).reelUrl.startsWith('http://') || (property as any).reelUrl.startsWith('https://')) ? (property as any).reelUrl : `https://${(property as any).reelUrl}`} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 bg-[#D97706] hover:bg-[#B45309] text-white font-semibold px-6 py-3 rounded-xl transition-colors shadow-sm"
+                >
+                  <Maximize2 className="w-4 h-4" /> Watch Reel / Video
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-4">
             {/* Contact card */}
-            <div className="bg-white border-2 border-[#2563EB]/15 rounded-2xl p-6 shadow-xl sticky top-24">
+            <div className="bg-white border-2 border-[#D97706]/15 rounded-2xl p-6 shadow-xl sticky top-24">
               <h3 className="font-bold text-lg mb-1 text-[#0F172A]">Interested in this property?</h3>
               <p className="text-slate-400 text-sm mb-5">Get in touch with our expert today</p>
               <a
                 href="tel:+919213699873"
-                className="flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold w-full py-3.5 rounded-xl mb-3 transition-colors text-sm"
+                className="flex items-center justify-center gap-2 bg-[#D97706] hover:bg-[#B45309] text-white font-bold w-full py-3.5 rounded-xl mb-3 transition-colors text-sm"
               >
                 <Phone className="w-4 h-4" /> Call Now
               </a>

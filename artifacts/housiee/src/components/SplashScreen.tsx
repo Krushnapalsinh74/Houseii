@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Building2 } from "lucide-react";
 
 export function SplashScreen() {
   const [show, setShow] = useState(false);
@@ -11,7 +12,7 @@ export function SplashScreen() {
       const timer = setTimeout(() => {
         setShow(false);
         sessionStorage.setItem("housiee_splash_shown", "true");
-      }, 2500);
+      }, 3000);
       return () => clearTimeout(timer);
     }
     return undefined;
@@ -21,36 +22,65 @@ export function SplashScreen() {
     <AnimatePresence>
       {show && (
         <motion.div
+          key="splash"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white"
+          exit={{ y: "-100%", opacity: 0 }}
+          transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-white via-[#EFF6FF] to-[#F0FDFF]" />
-          <motion.div
-            initial={{ scale: 0.85, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
-            className="relative z-10 flex flex-col items-center"
-          >
-            <h1 className="font-serif text-5xl md:text-7xl text-[#0F172A] tracking-widest uppercase">
-              HOUSIEE<span className="text-[#F59E0B]">.IN</span>
-            </h1>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.9 }}
-              className="mt-4 text-sm md:text-base text-slate-400 tracking-widest font-sans uppercase"
-            >
-              Real Estate Sales And Marketing
-            </motion.p>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] to-[#1E293B]" />
+          
+          <div className="relative z-10 flex flex-col items-center">
+            {/* Animated House Logo */}
             <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 1.8, delay: 0.4, ease: "easeInOut" }}
-              className="mt-6 h-0.5 w-32 bg-gradient-to-r from-[#2563EB] to-[#06B6D4] rounded-full origin-left"
-            />
-          </motion.div>
+              initial={{ opacity: 0, scale: 0.5, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="relative w-20 h-20 mb-6 flex items-center justify-center rounded-2xl bg-gradient-to-tr from-[#D97706] to-[#FDE68A] shadow-[0_0_40px_rgba(217,119,6,0.3)]"
+            >
+              <Building2 className="w-10 h-10 text-[#0F172A]" />
+              
+              {/* Spinning ring around it */}
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="absolute -inset-1 rounded-2xl border border-[#F59E0B]/30"
+              />
+            </motion.div>
+
+            {/* Typography Reveal */}
+            <div className="overflow-hidden">
+              <motion.h1 
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.76, 0, 0.24, 1] }}
+                className="font-serif text-5xl md:text-7xl text-white tracking-widest uppercase flex items-baseline"
+              >
+                HOUSIEE<span className="text-[#F59E0B]">.IN</span>
+              </motion.h1>
+            </div>
+            
+            <div className="overflow-hidden mt-3">
+              <motion.p
+                initial={{ y: "-100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                className="text-xs md:text-sm text-slate-400 tracking-[0.3em] font-sans uppercase"
+              >
+                Premium Real Estate
+              </motion.p>
+            </div>
+
+            {/* Loading Bar */}
+            <div className="mt-10 h-1 w-48 bg-slate-800 rounded-full overflow-hidden relative">
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: "0%" }}
+                transition={{ duration: 2.2, delay: 0.5, ease: "easeInOut" }}
+                className="absolute inset-0 bg-gradient-to-r from-[#D97706] via-[#FDE68A] to-[#D97706] rounded-full"
+              />
+            </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

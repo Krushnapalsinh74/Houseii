@@ -42,13 +42,13 @@ export default function Contact() {
             </div>
 
             <div className="space-y-8">
-              <div className="bg-[#EFF6FF] border border-[#2563EB]/20 p-8 rounded-2xl shadow-sm">
+              <div className="bg-[#FFFBEB] border border-[#D97706]/20 p-8 rounded-2xl shadow-sm">
                 <h3 className="text-2xl font-bold mb-8 font-serif text-[#0F172A]">Contact Information</h3>
                 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
-                      <MapPin className="w-5 h-5 text-[#2563EB]" />
+                      <MapPin className="w-5 h-5 text-[#D97706]" />
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1 text-[#0F172A]">Office Address</h4>
@@ -61,7 +61,7 @@ export default function Contact() {
                   
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
-                      <Phone className="w-5 h-5 text-[#2563EB]" />
+                      <Phone className="w-5 h-5 text-[#D97706]" />
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1 text-[#0F172A]">Phone Number</h4>
@@ -71,7 +71,7 @@ export default function Contact() {
 
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
-                      <Mail className="w-5 h-5 text-[#2563EB]" />
+                      <Mail className="w-5 h-5 text-[#D97706]" />
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1 text-[#0F172A]">Email Address</h4>
@@ -81,7 +81,7 @@ export default function Contact() {
 
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
-                      <Clock className="w-5 h-5 text-[#2563EB]" />
+                      <Clock className="w-5 h-5 text-[#D97706]" />
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1 text-[#0F172A]">Office Hours</h4>

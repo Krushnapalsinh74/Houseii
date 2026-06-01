@@ -14,7 +14,7 @@ function InputField({
   rightSlot?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 border border-slate-200 rounded-xl px-4 py-3 focus-within:border-[#2563EB] focus-within:ring-2 focus-within:ring-[#2563EB]/10 transition-all bg-white">
+    <div className="flex items-center gap-3 border border-slate-200 rounded-xl px-4 py-3 focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#D97706]/10 transition-all bg-white">
       <span className="text-slate-400 flex-shrink-0">{icon}</span>
       <input
         type={type}
@@ -87,12 +87,12 @@ export function AuthModal() {
           >
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md pointer-events-auto overflow-hidden">
               {/* Header */}
-              <div className="bg-[#EFF6FF] border-b border-slate-100 px-8 pt-8 pb-6 relative">
+              <div className="bg-[#FFFBEB] border-b border-slate-100 px-8 pt-8 pb-6 relative">
                 <button onClick={closeAuthModal} className="absolute top-5 right-5 text-slate-400 hover:text-[#0F172A] transition-colors">
                   <X className="w-5 h-5" />
                 </button>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-[#2563EB] rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-[#D97706] rounded-xl flex items-center justify-center">
                     <Building2 className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -146,7 +146,7 @@ export function AuthModal() {
                   value={password}
                   onChange={setPassword}
                   rightSlot={
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-slate-400 hover:text-[#2563EB] transition-colors flex-shrink-0">
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-slate-400 hover:text-[#D97706] transition-colors flex-shrink-0">
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   }
@@ -165,7 +165,7 @@ export function AuthModal() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#2563EB] hover:bg-[#1d4ed8] disabled:opacity-60 text-white font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+                  className="w-full bg-[#D97706] hover:bg-[#B45309] disabled:opacity-60 text-white font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   {authModalMode === "login" ? "Sign In" : "Create Account"}
@@ -177,7 +177,7 @@ export function AuthModal() {
                   <button
                     type="button"
                     onClick={() => switchMode(authModalMode === "login" ? "register" : "login")}
-                    className="text-[#2563EB] font-semibold hover:underline"
+                    className="text-[#D97706] font-semibold hover:underline"
                   >
                     {authModalMode === "login" ? "Register free" : "Sign in"}
                   </button>
